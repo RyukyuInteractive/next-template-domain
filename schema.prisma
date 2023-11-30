@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model threads {
+  id         Int         @id @default(autoincrement())
+  nanoid     String      @unique
+  text       String
+  is_deleted Boolean     @default(false)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  responses  responses[]
+
+  @@index([nanoid])
+}
+
+model responses {
+  id         Int      @id @default(autoincrement())
+  nanoid     String   @unique
+  text       String
+  is_deleted Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  thread_id  Int
+  threads    threads  @relation(fields: [thread_id], references: [id])
+
+  @@index([nanoid])
+}
